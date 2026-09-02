@@ -13,6 +13,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+// #define DEBUG
+
+#ifdef DEBUG
 static void append_probe(char *output, size_t output_size, const char *name,
                          const char *path, int flags) {
   errno = 0;
@@ -113,6 +116,7 @@ static void append_kaslr_timing_probe(char *output, size_t output_size) {
   }
 }
 #endif
+#endif
 
 JNIEXPORT jstring JNICALL
 Java_dev_busung_s25uroot_NativeProbe_run(JNIEnv *env, jobject thiz) {
@@ -133,6 +137,7 @@ Java_dev_busung_s25uroot_NativeProbe_run(JNIEnv *env, jobject thiz) {
            "uid=%u euid=%u gid=%u egid=%u\ncontext=%s\npage_size=%ld\n",
            getuid(), geteuid(), getgid(), getegid(), context,
            sysconf(_SC_PAGESIZE));
+#ifdef DEBUG
   append_probe(output, sizeof(output), "tracefs_control",
                "/sys/kernel/tracing/tracing_on", O_RDWR);
   append_probe(output, sizeof(output), "tracefs_event",
@@ -246,6 +251,7 @@ Java_dev_busung_s25uroot_NativeProbe_run(JNIEnv *env, jobject thiz) {
 
 #if defined(__aarch64__)
   append_kaslr_timing_probe(output, sizeof(output));
+#endif
 #endif
 
   return (*env)->NewStringUTF(env, output);
