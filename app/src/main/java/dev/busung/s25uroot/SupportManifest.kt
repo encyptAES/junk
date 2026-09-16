@@ -29,7 +29,7 @@ data class TargetProfile(
         snapshot.kernelVersion in kernelVersions
 
     fun matches(snapshot: DeviceSnapshot): Boolean =
-        matchesDevice(snapshot) && matchesKernelVersion(snapshot)
+        matchesKernelVersion(snapshot)
 
     val supportedModels: String
         get() = models.joinToString()
